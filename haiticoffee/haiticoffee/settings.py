@@ -117,6 +117,18 @@ USE_L10N = True
 
 USE_TZ = True
 
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_HTTPONLY = True
+
+SESSION_COOKIE_HTTPONLY = True
+
+SECURE_SSL_REDIRECT = True
+
+SESSION_COOKIE_AGE = 60*60
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
