@@ -5,5 +5,4 @@ from . import views
 app_name = 'main'
 urlpatterns = [
     path('', views.home, name='home'),
-    path('users/<int:user_id>', views.specificUser, name='specificUser'),
 ]
