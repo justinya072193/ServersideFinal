@@ -13,6 +13,7 @@ register = template.Library()
 
 def home(request):
         if request.method == 'GET':
+                print('a')
                 return render(request, "main/index.html")
         else:
                 return HttpResponse("Method not allowed on /.", status=405)
