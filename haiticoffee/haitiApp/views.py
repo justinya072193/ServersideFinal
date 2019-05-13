@@ -1,20 +1,16 @@
 from django.shortcuts import render
-from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from haitiApp.models import Address
-from rest_framework import viewsets
 from django.db import DatabaseError
-from django.contrib.auth.models import User
 from .models import Address, Customer, Order, Cart, Product, Product_Image
 import json
 import datetime
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import hashlib
-from django.views.decorators.csrf import csrf_exempt
 from haitiApp.forms import NewAddressForm
 
 # Create your views here.
