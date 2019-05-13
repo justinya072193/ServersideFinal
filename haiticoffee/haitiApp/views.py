@@ -1,14 +1,15 @@
 from django.shortcuts import render
-<<<<<<< HEAD
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from rest_framework import status
-from django.contrib.auth.models import User
-from haitiApp.models import Address
-=======
 from rest_framework import viewsets
 from rest_framework.response import Response
-
+from rest_framework import status
+from django.db import DatabaseError
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from haitiApp.models import Address
+from rest_framework import viewsets
+from rest_framework.response import Response
 from rest_framework import status
 from django.db import DatabaseError
 from django.views.decorators.csrf import csrf_exempt
@@ -19,7 +20,6 @@ import json
 import datetime
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
->>>>>>> justin1
 import hashlib
 import json
 from django.views.decorators.csrf import csrf_exempt

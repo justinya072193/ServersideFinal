@@ -4,6 +4,7 @@ from . import views
 
 #this creates path 
 app_name = 'haitiApp'
+
 urlpatterns = [
     path('carts', views.carts, name = "cart"),
     path('carts', views.cartByID, name = "cartByID"),
