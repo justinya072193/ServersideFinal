@@ -10,4 +10,8 @@ urlpatterns = [
     path('orders', views.orders, name = "orders"),
     path('orders', views.ordersByID, name = "ordersByIDS")
     
+app_name = 'main'
+urlpatterns = [
+    path('/users/address', views.address, name='address'),
+    path('/users/address/<int:address_id>', views.addressByID, name='addressByID')
 ]

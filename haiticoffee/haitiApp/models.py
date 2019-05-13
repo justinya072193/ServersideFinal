@@ -26,16 +26,15 @@ class Order(models.Model):
         ('FULFILLED', 'Fulfilled')
     )
     customer = models.ForeignKey('customer', Customer)
-    customer = models.ForeignKey('customer', Customer)
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
-    status = models.TextField('status', max_length = 250, default = 'Order Received')
-    totalPrice = models.TextField('totalPrice', max_length = 50)
+    status = models.CharField(choices=statusChoices, default='UNFULFILLED')
+    totalPrice = models.DecimalField('productPrice', max_digits=5, decimal_places=2)
+    address = models.TextField('address')
 
 class Cart(models.Model):
     customer = models.ForeignKey('customer', Customer)
-    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
-    orderID = models.OneToOneField(Order, on_delete=models.CASCADE, default = None)
-
+    totalPrice = models.DecimalField('productPrice', max_digits=5, decimal_places=2)
+    quantity = models.IntegerField('quantity')
 
 class Product(models.Model):
     productName = models.TextField('productName', max_length = 250, unique = True)
