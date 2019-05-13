@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .forms import SigninForm, RegistrationForm
 from django.contrib.auth.models import User
+from haitiApp.models import Customer
 from django.views.decorators.debug import sensitive_post_parameters
 
 @sensitive_post_parameters('username','password','passwordconf','email','first_name','last_name')
@@ -28,8 +29,9 @@ def register(request):
                         user, created = User.objects.get_or_create(username=username, email = email, 
                                 first_name = first_name, last_name = last_name)
                         user.set_password(password)
-
                         user.save()
+                        newCustomer = Customer.objects.create(user = user)
+                        newCustomer.save()
                         return HttpResponseRedirect("/auth/signin")
                 else:
                         return HttpResponse("Invalid registration request.", status = 405)

@@ -1,27 +1,19 @@
 from django.shortcuts import render
-from django.views.decorators.debug import sensitive_post_parameters
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from django.db import DatabaseError
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from haitiApp.models import Address
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
 from django.db import DatabaseError
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from .models import Address, Customer, Order, Cart, Product, Product_Image
-from rest_framework import status
 import json
 import datetime
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 import hashlib
-import json
 from django.views.decorators.csrf import csrf_exempt
 from haitiApp.forms import NewAddressForm
 
@@ -43,7 +35,7 @@ def address(request):
                             postalCode = addressData['postalCode'],
                             country = addressData['country'])
         newAddress.save()
-        currUser = User.objects.get(id=user_id)
+        currUser = User.objects.get(id=request.user.user_id)
         currUser.customerAddress(newAddress)
         return HttpResponse('Address created successfully', status=status.HTTP_200_OK)
 
@@ -82,7 +74,7 @@ def carts(request):
         newCart = Cart.objects.create(customer = request.user.id)
         newCart.save()
         cartJSON = Cart.objects.all().values().filter(pk = newCart.pk)[0]
-        return JsonResponse(cartJSON, safe = False, content_type = 'application/json', status = status.HTTP_201_CREATED)
+        return JsonResponse(cartJSON, safe = False, status = status.HTTP_201_CREATED)
 
 def cartByID(request, cart_id):
     if(request.method == "PATCH"):
