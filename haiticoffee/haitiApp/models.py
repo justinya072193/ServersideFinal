@@ -18,33 +18,40 @@ class Customer(models.Model):
     isFarmer = models.BooleanField('isFarmer', default=False)
 
 class Order(models.Model):
+    statusChoices = (
+        ('UNFULFILLED', 'Unfulfilled'),
+        ('PENDING_PAYMENT', 'Pending Payment'),
+        ('CANCELLED', 'Cancelled'),
+        ('REFUNDED', 'Refunded'),
+        ('FULFILLED', 'Fulfilled')
+    )
+    customer = models.ForeignKey('customer', Customer)
     customer = models.ForeignKey('customer', Customer)
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
-    status = models.TextField('status', max_length = 250)
+    status = models.TextField('status', max_length = 250, default = 'Order Received')
     totalPrice = models.TextField('totalPrice', max_length = 50)
 
 class Cart(models.Model):
     customer = models.ForeignKey('customer', Customer)
-    totalPrice = models.TextField('totalPrice', max_length = 50)
-    quantity = models.IntegerField('quantity')
+    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
+    orderID = models.OneToOneField(Order, on_delete=models.CASCADE, default = None)
+
 
 class Product(models.Model):
-    productName = models.TextField('productName', max_length = 250)
+    productName = models.TextField('productName', max_length = 250, unique = True)
     productDescription = models.TextField('productDescription', max_length = 250)
     productPrice = models.DecimalField('productPrice', max_digits=5, decimal_places=2)
+    productCart = models.ManyToManyField(Cart)
+    #productOrder = models.ManyToManyField(Order)
 
 class Product_Image(models.Model) :
     product = models.ForeignKey('product', Product)
     img = models.ImageField('img')
 
-class cart_product(models.Model):
-    cartID = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    productID = models.ForeignKey(Product, on_delete=models.CASCADE)
 
-class Order_Product(models.Model):
-    orderID = models.ForeignKey(Order, on_delete=models.CASCADE)
-    productID = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField('quantity')
+
+
+
 
 
 
