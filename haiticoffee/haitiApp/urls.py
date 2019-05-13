@@ -11,5 +11,8 @@ urlpatterns = [
     path('orders', views.orders, name = "orders"),
     path('orders', views.ordersByID, name = "ordersByIDS"),
     path('/users/address', views.address, name='address'),
-    path('/users/address/<int:address_id>', views.addressByID, name='addressByID')
+    path('/users/address/<int:address_id>', views.addressByID, name='addressByID'),
+    path('vendors', views.vendors, name = "vendors"),
+    path('farmers', views.farmers, name = "farmers"),
+    #path('vendors', views.patchVendors, name = "patchVendors")
 ]

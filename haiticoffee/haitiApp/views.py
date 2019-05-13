@@ -72,7 +72,7 @@ def carts(request):
         return JsonResponse(cartList, safe=False, status = status.HTTP_200_OK)
     elif(request.method == "POST"):
         customer = Customer.objects.get(user = request.user)
-        newCart = Cart.objects.create(customer = customer)
+        newCart = Cart.objects.create(customer = customer, totalPrice = 0)
         newCart.save()
         cartJSON = Cart.objects.all().values().filter(pk = newCart.pk)[0]
         return JsonResponse(cartJSON, safe = False, status = status.HTTP_201_CREATED)
@@ -115,8 +115,11 @@ def orders(request):
             return HttpResponse(JSONDecodeFailMessage, status=400)
         #user must provide cartID to define total price
         cart_id = data['cartID']
+        totalPrice = Cart.objects.values('totalPrice').filter(id = cart_id)
         grabCart = Cart.objects.values().filter(id = cart_id)
-        newOrder = Order.objects.create(customer = request.user.id, totalPrice = grabCart.totalPrice)
+        customer = Customer.objects.get(user = request.user)
+
+        newOrder = Order.objects.create(customer = customer, totalPrice = totalPrice, cartID = Cart.objects.get(id = cart_id))
         newOrder.save()
         orderJSON = Order.objects.all().values().filter(pk = newOrder.pk)[0]
         return JsonResponse(orderJSON, safe = False, content_type = 'application/json', status = status.HTTP_201_CREATED)
@@ -140,3 +143,34 @@ def ordersByID(request, order_id):
     elif(request.method == "DELETE"):
         grabOrder = Order.objects.values().filter(id = order_id).delete()
         return HttpResponse("Delete Successful", status = 200)
+
+
+@csrf_exempt
+@sensitive_post_parameters()
+def vendors(request):
+    if(request.method == "GET"):
+        Vendors = Customer.objects.values().filter(isVendor = True)
+        vendorList = list(Vendors)
+        return JsonResponse(vendorList, safe=False, status = status.HTTP_200_OK)
+
+# @csrf_exempt
+# @sensitive_post_parameters()
+# def patchVendors(request, cust_id):
+#     if(request.method == "PATCH"):
+#         try:
+#             data = json.loads(request.body.decode('utf-8'))
+#         except json.JSONDecodeError:
+#             return HttpResponse(JSONDecodeFailMessage, status=400)
+#         grabCustomer = Customer.objects.values().filter(id = cust_id)
+#         grabCustomer.update(isVendor = data['vendor'])
+#         customerJSON = Customer.objects.all().values().filter(id = cust_id)[0]
+#         return JsonResponse(customerJSON, safe = False, content_type = 'application/json', status = status.HTTP_202_ACCEPTED)
+
+
+@csrf_exempt
+@sensitive_post_parameters()
+def farmers(request):
+    if(request.method == "GET"):
+        farmers = Customer.objects.values().filter(isFarmer = True)
+        farmersList = list(farmers)
+        return JsonResponse(farmersList, safe=False, status = status.HTTP_200_OK)
