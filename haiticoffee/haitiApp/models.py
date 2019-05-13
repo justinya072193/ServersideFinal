@@ -18,6 +18,14 @@ class Customer(models.Model):
     isFarmer = models.BooleanField('isFarmer', default=False)
 
 class Order(models.Model):
+    statusChoices = (
+        ('UNFULFILLED', 'Unfulfilled'),
+        ('PENDING_PAYMENT', 'Pending Payment'),
+        ('CANCELLED', 'Cancelled'),
+        ('REFUNDED', 'Refunded'),
+        ('FULFILLED', 'Fulfilled')
+    )
+    customer = models.ForeignKey('customer', Customer)
     customer = models.ForeignKey('customer', Customer)
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
     status = models.TextField('status', max_length = 250, default = 'Order Received')
@@ -25,9 +33,8 @@ class Order(models.Model):
 
 class Cart(models.Model):
     customer = models.ForeignKey('customer', Customer)
-    totalPrice = models.TextField('totalPrice', max_length = 50, default = 0)
+    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
     orderID = models.OneToOneField(Order, on_delete=models.CASCADE, default = None)
-
 
 
 class Product(models.Model):
