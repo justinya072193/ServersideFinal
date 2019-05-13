@@ -17,7 +17,6 @@ class Customer(models.Model):
     isVendor = models.BooleanField('isVendor', default=False)
     isFarmer = models.BooleanField('isFarmer', default=False)
 
-
 class Cart(models.Model):
     customer = models.ForeignKey('customer', Customer)
     totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
