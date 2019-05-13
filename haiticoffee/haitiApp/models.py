@@ -17,7 +17,6 @@ class Customer(models.Model):
     isVendor = models.BooleanField('isVendor', default=False)
     isFarmer = models.BooleanField('isFarmer', default=False)
 
-
 class Cart(models.Model):
     customer = models.ForeignKey('customer', Customer)
     totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
@@ -35,7 +34,6 @@ class Order(models.Model):
     status = models.TextField('status', max_length = 250, default = 'Order Received')
     totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
     cartID = models.ForeignKey('Cart', Cart)
-
 
 
 class Product(models.Model):
