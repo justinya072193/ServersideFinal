@@ -67,7 +67,8 @@ def carts(request):
         cartList = list(carts)
         return JsonResponse(cartList, safe=False, status = status.HTTP_200_OK)
     elif(request.method == "POST"):
-        newCart = Cart.objects.create(customer = request.user.id)
+        customer = Customer.objects.get(user = request.user)
+        newCart = Cart.objects.create(customer = customer)
         newCart.save()
         cartJSON = Cart.objects.all().values().filter(pk = newCart.pk)[0]
         return JsonResponse(cartJSON, safe = False, status = status.HTTP_201_CREATED)

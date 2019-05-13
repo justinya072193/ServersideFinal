@@ -17,6 +17,11 @@ class Customer(models.Model):
     isVendor = models.BooleanField('isVendor', default=False)
     isFarmer = models.BooleanField('isFarmer', default=False)
 
+
+class Cart(models.Model):
+    customer = models.ForeignKey('customer', Customer)
+    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
+
 class Order(models.Model):
     statusChoices = (
         ('UNFULFILLED', 'Unfulfilled'),
@@ -29,11 +34,8 @@ class Order(models.Model):
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
     status = models.TextField('status', max_length = 250, default = 'Order Received')
     totalPrice = models.TextField('totalPrice', max_length = 50)
+    cartID = models.OneToOneField(Cart, on_delete=models.CASCADE, default = None)
 
-class Cart(models.Model):
-    customer = models.ForeignKey('customer', Customer)
-    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
-    orderID = models.OneToOneField(Order, on_delete=models.CASCADE, default = None)
 
 class Product(models.Model):
     productName = models.TextField('productName', max_length = 250, unique = True)
