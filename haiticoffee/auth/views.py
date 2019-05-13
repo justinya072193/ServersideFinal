@@ -1,7 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import SigninForm, RegistrationForm
 from django.contrib.auth.models import User
@@ -9,20 +8,21 @@ from django.views.decorators.debug import sensitive_post_parameters
 
 @sensitive_post_parameters('username','password','passwordconf','email','first_name','last_name')
 def register(request):
+        """
+        Render a new user form on GET request.
+        Register new user in database on POST request.
+        """
         if request.method == 'GET':
-                #print('aaa')
                 return HttpResponse(render(request, "auth/register.html", {'form' : RegistrationForm}), status = 200)
         elif request.method == 'POST':
                 form = RegistrationForm(request.POST)
                 if form.is_valid():
-                        #form.save()
                         username = form.cleaned_data.get('username')
                         password = form.cleaned_data.get('password')
                         passwordconf = form.cleaned_data.get('passwordconf')
                         email = form.cleaned_data.get('email')
                         first_name = form.cleaned_data.get('first_name')
                         last_name = form.cleaned_data.get('last_name')
-                        #print(fName)
                         if(password != passwordconf):
                                 return HttpResponse("Passwords did not match.", status=400) 
                         user, created = User.objects.get_or_create(username=username, email = email, 
@@ -38,6 +38,10 @@ def register(request):
 
 @sensitive_post_parameters('username','password')
 def signin(request):
+    """
+    Render login form on GET request.
+    Log in user on POST request.
+    """
     if request.method == 'GET':
         return HttpResponse(render(request, "auth/signin.html", {'form' : SigninForm}), status = 200)
     elif request.method == 'POST':
@@ -56,6 +60,9 @@ def signin(request):
 
 
 def signout(request):
+    """
+    Signs user out on GET request.
+    """
     if request.method == 'GET':
         if request.user.is_authenticated:
             logout(request)
