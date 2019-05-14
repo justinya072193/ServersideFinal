@@ -32,7 +32,6 @@ class Order(models.Model):
     customer = models.ForeignKey('customer', Customer)
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
     status = models.TextField('status', max_length = 250, default = 'Order Received')
-    totalPrice = models.DecimalField('totalPrice', max_digits = 5, decimal_places = 2)
     cartID = models.ForeignKey('Cart', Cart)
 
 

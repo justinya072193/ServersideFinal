@@ -112,10 +112,12 @@ def orders(request):
         #user must provide cartID to define total price
         cart_id = data['cartID']
         totalPrice = Cart.objects.values('totalPrice').filter(id = cart_id)
+
+
         grabCart = Cart.objects.values().filter(id = cart_id)
         customer = Customer.objects.get(user = request.user)
 
-        newOrder = Order.objects.create(customer = customer, totalPrice = totalPrice, cartID = Cart.objects.get(id = cart_id))
+        newOrder = Order.objects.create(customer = customer, cartID = Cart.objects.get(id = cart_id))
         newOrder.save()
         orderJSON = Order.objects.all().values().filter(pk = newOrder.pk)[0]
         return JsonResponse(orderJSON, safe = False, content_type = 'application/json', status = status.HTTP_201_CREATED)
