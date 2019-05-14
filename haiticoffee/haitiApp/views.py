@@ -149,18 +149,22 @@ def vendors(request):
         vendorList = list(Vendors)
         return JsonResponse(vendorList, safe=False, status = status.HTTP_200_OK)
 
-# @csrf_exempt
-# @sensitive_post_parameters()
-# def patchVendors(request, cust_id):
-#     if(request.method == "PATCH"):
-#         try:
-#             data = json.loads(request.body.decode('utf-8'))
-#         except json.JSONDecodeError:
-#             return HttpResponse(JSONDecodeFailMessage, status=400)
-#         grabCustomer = Customer.objects.values().filter(id = cust_id)
-#         grabCustomer.update(isVendor = data['vendor'])
-#         customerJSON = Customer.objects.all().values().filter(id = cust_id)[0]
-#         return JsonResponse(customerJSON, safe = False, content_type = 'application/json', status = status.HTTP_202_ACCEPTED)
+@csrf_exempt
+@sensitive_post_parameters()
+def patchVendors(request, cust_id):
+    if(request.method == "PATCH"):
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return HttpResponse(JSONDecodeFailMessage, status=400)
+        grabCustomer = Customer.objects.values().filter(id = cust_id)
+        grabCustomer.update(isVendor = data['vendor'])
+        customerJSON = Customer.objects.all().values().filter(id = cust_id)[0]
+        return JsonResponse(customerJSON, safe = False, content_type = 'application/json', status = status.HTTP_202_ACCEPTED)
+    elif(request.method == "DELETE"):
+        grabCustomer = Customer.objects.values().filter(id = cust_id, isVendor = True)
+        grabCustomer.delete()
+        return HttpResponse("Delete Successful", status = 200)
 
 
 @csrf_exempt
