@@ -10,6 +10,6 @@ urlpatterns = [
     path('carts', views.cartByID, name = "cartByID"),
     path('orders', views.orders, name = "orders"),
     path('orders', views.ordersByID, name = "ordersByIDS"),
-    path('/users/address', views.address, name='address'),
-    path('/users/address/<int:address_id>', views.addressByID, name='addressByID')
+    path('users/create-address', views.address, name='address'),
+    path('users/address', views.addressByUser, name='addressByUser')
 ]

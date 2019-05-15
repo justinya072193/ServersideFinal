@@ -3,61 +3,83 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-from haitiApp.models import Address
 from django.db import DatabaseError
 from .models import Address, Customer, Order, Cart, Product, Product_Image
 import json
 import datetime
 from django.views.decorators.debug import sensitive_post_parameters
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-import hashlib
 from haitiApp.forms import NewAddressForm
+from django.contrib.auth.decorators import login_required
+
+JSONDecodeFailMessage = "Error decoding JSON body. Please ensure your JSON file is valid."
+BadRequestMessage = "Bad request."
+DatabaseErrorMessage = "Error interacting with database."
 
 # Create your views here.
 @csrf_exempt
+@login_required(login_url='/auth/signin')
 def address(request):
     """
     On GET- returns form to create an address.
     On POST- creates new address for current user.
     """
-    if request.method == 'GET':
-        return HttpResponse(render(request, "auth/register.html", {'form' : NewAddressForm}), status = 200) 
-    elif request.method == 'POST':
-        addressData = json.loads(request.body.decode('utf-8'))
-        newAddress = Address(addressLine1 = addressData['addressLine1'],
-                            addressLine2 = addressData['addressLine2'],
-                            city = addressData['city'],
-                            state = addressData['state'],
-                            postalCode = addressData['postalCode'],
-                            country = addressData['country'])
-        newAddress.save()
-        currUser = User.objects.get(id=request.user.user_id)
-        currUser.customerAddress(newAddress)
-        return HttpResponse('Address created successfully', status=status.HTTP_200_OK)
+    try:
+        if request.method == 'GET':
+            return HttpResponse(render(request, "auth/register.html", {'form' : NewAddressForm}), status = 200) 
+        elif request.method == 'POST':
+            addressData = request.POST
+            newAddress = Address(addressLine1 = addressData['addressLine1'],
+                                addressLine2 = addressData['addressLine2'],
+                                city = addressData['city'],
+                                state = addressData['state'],
+                                postalCode = addressData['postalCode'],
+                                country = addressData['country'])
+            newAddress.save()
+            currCustomer = Customer.objects.get(user=request.user)
+            currCustomer.customerAddress.add(newAddress)
+            return HttpResponse('Address created successfully', status=status.HTTP_200_OK)
+    except DatabaseError :
+        return HttpResponse(DatabaseErrorMessage, status=status.HTTP_400_BAD_REQUEST)
+    except Exception :
+        return HttpResponse(BadRequestMessage, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
-def addressByID(request, address_id):
+@sensitive_post_parameters
+def addressByUser(request):
     """
-    On GET- return current user's address by id
-    On PATCH- Updates given address details with data provided by user.
-    On DELETE- Deletes given address from user profile
+    On GET- return current user's addresses.
+    On PATCH- Updates a users address with data given by user.
+    On DELETE- Deletes given address from user profile.
     """
-    if request.method == 'GET':
-        currAddress = Address.objects.get(id=address_id)
-        JsonResponse(currAddress, status=status.HTTP_200_OK, safe=False)
-    elif request.method == 'PATCH':
-        addressData = json.loads(request.body.decode('utf-8'))
-        currAddress = Address.objects.get(id=address_id)
-        currAddress.update(addressLine1 = addressData['addressLine1'],
-                           addressLine2 = addressData['addressLine2'],
-                           city = addressData['city'],
-                           State = addressData['state'],
-                           postalCode = addressData['postalCode'],
-                           country = addressData['country'])
-        return JsonResponse(currAddress, status=status.HTTP_200_OK, safe=False)
-    elif request.method == 'DELETE':
-        Address.objects.get(id=address_id).delete()
-        return HttpResponse('Deleted address successfully.', status=status.HTTP_200_OK)
+    try:
+        if request.method == 'GET':
+            currCustomer = Customer.objects.get(user=request.user)
+            userAddresses = currCustomer.customerAddress
+            userAddresses = list(userAddresses.values())
+            return JsonResponse(userAddresses, status=status.HTTP_200_OK, safe=False)
+        elif request.method == 'PATCH':
+            addressData = json.loads(request.body.decode('utf-8'))
+            currAddress = Address.objects.get(id=addressData['id'])
+            currAddress.addressLine1 = addressData['addressLine1']
+            currAddress.addressLine2 = addressData['addressLine2']
+            currAddress.city = addressData['city']
+            currAddress.state = addressData['state']
+            currAddress.postalCode = addressData['postalCode']
+            currAddress.country = addressData['country']
+            currAddress.save()
+            jsonAddress = list(Address.objects.filter(id=currAddress.id).values())
+            return JsonResponse(jsonAddress[0], status=status.HTTP_200_OK, safe=False)
+        elif request.method == 'DELETE':
+            addressID = json.loads(request.body.decode('utf-8'))
+            Address.objects.get(id=addressID['id']).delete()
+            return HttpResponse('Deleted address successfully.', status=status.HTTP_200_OK)
+    except json.JSONDecodeError :
+        return HttpResponse(JSONDecodeFailMessage, status=status.HTTP_400_BAD_REQUEST)
+    except DatabaseError :
+        return HttpResponse(DatabaseErrorMessage, status=status.HTTP_400_BAD_REQUEST)
+    except Exception :
+        return HttpResponse(BadRequestMessage, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @sensitive_post_parameters()

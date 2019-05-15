@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('auth/', include('auth.urls')),
-    path('haitiApp/', include('haitiApp.urls'))
+    path('haitiApp/', include('haitiApp.urls')),
+    path('products/', include('products.urls'))
 ]
