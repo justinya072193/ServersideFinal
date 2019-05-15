@@ -1,88 +1,88 @@
 # serversideFinal
 # serversideFinal
-##carts:
+## carts:
 
 https://127.0.0.1:8000/haitiApp/carts/
 
 
-###GET:
+### GET:
     This returns all the carts in the database
     
     
-###Post: 
+### Post: 
     Input: None
 
     Output: 
     [{"id": 1, "customer_id": 1, "totalPrice": "0.00"}]
 
-##cartsByID 
+## cartsByID 
 
 https://127.0.0.1:8000/haitiApp/carts/{id}
 
 
-###GET:
+### GET:
     this gets cart with specific id
     
-###Patch:
+### Patch:
     Input {'name':'ProductName', 'method' : 'ADD'}
 
     Output: [{"id": 1, "customer_id": 1, "totalPrice": "3.00"}]
     
    
-###DELETE:
+### DELETE:
     this deletes the specific cart
 
 
-##Order:
+## Order:
 https://127.0.0.1:8000/haitiApp/orders/
 
-###GET
+### GET
     this gets all order in the database
     
     
-###POST
+### POST
     INPUT {"cartID": 1}
     OUTPUT: [{"id": 2, "customer_id": 1, "orderDate": "2019-05-14T21:01:29.745Z", "status": "Order Received", "cartID_id": 1}
 
-##Order by ID
+## Order by ID
 https://127.0.0.1:8000/haitiApp/orders/{id}
 
 
-###GET
+### GET
     gets the order with specific ID
     
     
-###Patch
+### Patch
     INPUT {"status: "Order Received"}
     Output {"id": 3, "customer_id": 1, "orderDate": "2019-05-14T21:02:02.375Z", "status": "Order Received", "cartID_id": 1}
 
 
-###DELETE
+### DELETE
     this deletes specific order with the id
 
 
-##Vendors:
+## Vendors:
 
 
-##GET:
+## GET:
     this returns all user who are customers
 
-##patchVendor:
+## patchVendor:
 
 
-##PATCH:
+## PATCH:
 
 https://127.0.0.1:8000/haitiApp/vendors/{id}
     input:
     isVendor: Boolean(True/False)
 
-##DELETE:
+## DELETE:
 
     this deletes specific user who are vendors
 
-##Farmers:
+## Farmers:
 
-##GET: 
+## GET: 
 this returns all user who are farmers
 
 
