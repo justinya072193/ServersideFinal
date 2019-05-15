@@ -7,9 +7,11 @@ from django.contrib.auth.models import User
 from haitiApp.models import Customer
 from rest_framework import status
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 @sensitive_post_parameters('username','password','passwordconf','email','first_name','last_name')
+@csrf_exempt
 def register(request):
         """
         Render a new user form on GET request.
@@ -41,11 +43,14 @@ def register(request):
             return HttpResponse("Method not allowed on /auth/register.", status = 405)
 
 @sensitive_post_parameters('username','password')
+@csrf_exempt
 def signin(request):
     """
     Render login form on GET request.
     Log in user on POST request.
     """
+    if request.user.is_authenticated:
+        return HttpResponse("You are already signed in!", status=status.HTTP_200_OK)
     if request.method == 'GET':
         return HttpResponse(render(request, "auth/signin.html", {'form' : SigninForm}), status = 200)
     elif request.method == 'POST':
@@ -62,17 +67,21 @@ def signin(request):
     else:
         return HttpResponse("Bad login form.", status = 400)
 
-@login_required(login_url='/auth/signin')
+@csrf_exempt
 def signout(request):
     """
     Signs user out on GET request.
     """
     if request.method == 'GET':
-        logout(request)
-        return HttpResponse("Sign out successful.", status = 200)
+        if (request.user.is_authenticated) :
+            logout(request)
+            return HttpResponse("Sign out successful", status=200)
+        else :
+            return HttpResponse("Not logged in", status=200)
     else:
         return HttpResponse("Method not allowed on auth/signout.", status = 405)
 
+@csrf_exempt
 @login_required(login_url='/auth/signin')
 def testAdmin(request):
     """
@@ -82,4 +91,5 @@ def testAdmin(request):
         currCustomer = Customer.objects.get(user=request.user)
         currCustomer.isAdmin = True
         currCustomer.save()
+        print(currCustomer)
         return HttpResponse('Your user account now has admin access', status=status.HTTP_200_OK)

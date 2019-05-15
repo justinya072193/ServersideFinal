@@ -45,7 +45,6 @@ def address(request):
         return HttpResponse(BadRequestMessage, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
-@sensitive_post_parameters
 def addressByUser(request):
     """
     On GET- return current user's addresses.
@@ -60,7 +59,10 @@ def addressByUser(request):
             return JsonResponse(userAddresses, status=status.HTTP_200_OK, safe=False)
         elif request.method == 'PATCH':
             addressData = json.loads(request.body.decode('utf-8'))
+
             currAddress = Address.objects.get(id=addressData['id'])
+            if not currAddress in Customer.objects.get(user=request.user).customerAddress.all():
+                return HttpResponse('You may only edit your own address.', status=status.HTTP_403_FORBIDDEN)
             currAddress.addressLine1 = addressData['addressLine1']
             currAddress.addressLine2 = addressData['addressLine2']
             currAddress.city = addressData['city']
