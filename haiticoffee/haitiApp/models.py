@@ -32,8 +32,7 @@ class Order(models.Model):
     customer = models.ForeignKey('customer', Customer)
     orderDate = models.DateTimeField('orderDate', auto_now_add = True)
     status = models.TextField('status', max_length = 250, default = 'Order Received')
-    totalPrice = models.TextField('totalPrice', max_length = 50)
-    cartID = models.OneToOneField(Cart, on_delete=models.CASCADE, default = None)
+    cartID = models.ForeignKey('Cart', Cart)
 
 class Product(models.Model):
     productName = models.CharField('productName', max_length = 250, unique = True)
