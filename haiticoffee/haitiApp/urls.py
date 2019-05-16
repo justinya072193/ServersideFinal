@@ -11,9 +11,9 @@ urlpatterns = [
     path('orders', views.orders, name = "orders"),
     path('orders/<int:order_id>', views.ordersByID, name = "ordersByIDS"),
     path('users/create-address', views.address, name='address'),
-    path('users/address', views.addressByUser, name='addressByUser')
+    path('users/address', views.addressByUser, name='addressByUser'),
     path('vendors', views.vendors, name = "vendors"),
     path('vendors/<int:cust_id>', views.patchVendors, name = "vendors"),
-    path('farmers', views.farmers, name = "farmers"),
+    path('farmers', views.farmers, name = "farmers")
     #path('vendors', views.patchVendors, name = "patchVendors")
 ]

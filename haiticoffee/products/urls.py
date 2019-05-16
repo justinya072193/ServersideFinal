@@ -3,7 +3,7 @@ from django.urls import path, include
 from . import views
 
 #this creates path 
-app_name = 'haitiApp'
+app_name = 'products'
 
 urlpatterns = [
     path('create', views.createProducts, name = "createProducts"),

@@ -16,9 +16,6 @@ JSONDecodeFailMessage = "Error decoding JSON body. Please ensure your JSON file 
 BadRequestMessage = "Bad request."
 DatabaseErrorMessage = "Error interacting with database."
 
-JSONDecodeFailMessage = "Error decoding JSON body. Please ensure your JSON file is valid."
-DatabaseErrorMessage = "Error interacting with database."
-
 # Create your views here.
 @csrf_exempt
 @login_required(login_url='/auth/signin')
@@ -48,6 +45,7 @@ def address(request):
         return HttpResponse(BadRequestMessage, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
+@login_required(login_url='/auth/signin')
 def addressByUser(request):
     """
     On GET- return current user's addresses.

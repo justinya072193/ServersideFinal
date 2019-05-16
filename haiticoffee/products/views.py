@@ -104,7 +104,7 @@ def manageProductImages(request, product_id):
         elif request.method == "DELETE":
             imageData = json.loads(request.body.decode('utf-8'))
             Product_Image.objects.get(id=imageData['id']).delete()
-            return HttpResponse('Deleted Image successfully')
+            return HttpResponse('Deleted Image successfully.')
     except json.JSONDecodeError :
         return HttpResponse(JSONDecodeFailMessage, status=status.HTTP_400_BAD_REQUEST)
     except DatabaseError :
